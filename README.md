@@ -124,7 +124,7 @@ cd claude-code-ops
 bash run.sh
 ```
 
-See [QUICKSTART.md](QUICKSTART.md) for the full guide.
+See [QUICKSTART.md](QUICKSTART.md) for the full guide. Once you're running, [GROWING.md](GROWING.md) covers how to make ccops better the more you use it.
 
 ## Honest Bits
 
@@ -233,7 +233,7 @@ cd claude-code-ops
 bash run.sh
 ```
 
-完整指南见 [QUICKSTART.md](QUICKSTART.md)。
+完整指南见 [QUICKSTART.md](QUICKSTART.md)。跑起来后，[GROWING.md](GROWING.md) 讲怎么让 ccops 越用越好。
 
 ## 诚实的部分
 
