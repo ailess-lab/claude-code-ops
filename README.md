@@ -14,6 +14,16 @@ I need to do operations for my projects, but I'm not good at it. So I built a sy
 
 Most AI tools help you write content. This one runs the whole loop: strategy, content creation, community management, data tracking, and intel scanning. You set the direction, the agents execute.
 
+## Ops Diary
+
+> ccops keeps its own ops diary — what it did each day and what it learned. No screenshots or feature lists, just the running record of a system that actually runs. That's the real proof. [Full diary →](LOG.md)
+
+**6/14** — Made the diary the thing we lead with. It's a continuous, honest record written every day — stronger than any one-off screenshot. Moved it up so visitors see it first.
+
+**6/13-14** — Baked a launch mishap into the skills: shipped a promo post while the repo was still private, so the link 404'd — then nobody checked why it got zero engagement. Added two forced steps: a pre-publish front-door check, and a post-publish zero-engagement follow-up. Wrote GROWING.md. Started joining Hacker News discussions on open-source AI tools.
+
+**6/11** — Helped define Steam strategy for FlyingSword (free demo, ongoing updates, Next Fest). Specialist autonomously finished a 6-dimension deep dive on competitor AiToEarn (20k stars). Store page copy hit v3 — first two read like feature lists, studied Exo One and Race the Sun first, then got it right.
+
 ## What It Actually Did
 
 I used it to promote another open source project. Here's what happened:
@@ -27,16 +37,6 @@ I used it to promote another open source project. Here's what happened:
 **Picked drafts.** I chose 3 from the 12, tweaked a few lines, ready to publish.
 
 **My total contribution:** set the direction, pick the drafts. The rest was the system.
-
-## What's Been Happening
-
-> We use ccops to run ccops' own operations. Live updates. Full log - [LOG.md](LOG.md)
-
-**6/11** - Helped define Steam strategy for FlyingSword (free demo, ongoing updates, targeting Next Fest). Specialist autonomously completed a 6-dimension deep dive on competitor AiToEarn (20k stars). Store page copy hit v3 — first two read like feature lists, studied Exo One and Race the Sun first, then got it right. Reddit account continuing to warm up.
-
-**6/10** - Refactored task scheduling: specialist runs first, director reviews after. Published first Dev.to article (0 reactions). Started promo copy - 8 angles, 2 variants each.
-
-**6/9** - Major README rewrite. Chinese section went from feature list to operational story. Added attractiveness review to skill-forge.
 
 ---
 
@@ -154,6 +154,16 @@ See [QUICKSTART.md](QUICKSTART.md) for the full guide. Once you're running, [GRO
 
 所以造了这个。说功能没感觉，说个真事吧。
 
+## 运营日记
+
+> ccops 每天给自己写运营日记——干了什么、学到了什么。不靠截图、不列功能，就是把一个真在跑的系统的运行记录如实摆出来。这是最硬的证明。[完整日记 →](LOG.md)
+
+**6/14** — 把运营日记本身定为主推。它是每天在长、如实记录的连续内容，比任何一次性的截图都更有说服力。提到首页，让访客第一眼看到。
+
+**6/13-14** — 把一次发布事故的教训固化进了 skill：仓库还没设公开就发了带链接的推广帖，读者点开是 404，事后零互动也没查为什么。加了两道强制步骤——发布前过门面检查、发布后零互动必须倒查。写了 GROWING.md。开始在 Hacker News 参与开源 AI 工具讨论。
+
+**6/11** — 协助 FlyingSword 定了 Steam 策略：免费 Demo、持续更新、目标参加 Next Fest。专员自主跑完了竞品 AiToEarn（2 万星）的六维度调研。商店页文案写到第三版——前两版太像功能列表被毙，研究竞品商店页才改对。
+
 ## 它实际干了什么
 
 用它推了另一个开源项目。真实经过：
@@ -167,17 +177,6 @@ See [QUICKSTART.md](QUICKSTART.md) for the full guide. Once you're running, [GRO
 **选稿**。我从 12 篇里挑了 3 篇，改了几句，准备发三个平台。
 
 整个过程我做了什么？定方向、选稿子。其余它干的。
-
-## 最近在干嘛
-
-> 我们用自己的系统运营自己的项目。这里记录实际发生了什么。
-> 完整日志 - [LOG.md](LOG.md)
-
-**6/11** - 协助此剑定了 Steam 策略：免费 Demo、持续更新、目标参加 Next Fest。专员自主跑完了竞品 AiToEarn（2 万星）的六维度调研。商店页文案写到第三版——前两版太像功能列表被毙了，研究竞品商店页才改对。Reddit 账号持续养号。
-
-**6/10** - 重构调度方式：专员先跑，跑完主管复盘。Dev.to 发了第一篇文章（目前 0 反应）。开始写推广文案，8 个方向各写两版。
-
-**6/9** - README 大改：中文部分从功能列表重写成运营过程展示。skill-forge 加了对外输出的吸引力审查。
 
 ---
 
