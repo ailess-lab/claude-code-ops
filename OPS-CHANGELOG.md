@@ -6,3 +6,4 @@
 - 2026-06-10 | refactor | 调度重写：轮询 tasks.md 替代 next-run.txt；专员先执行主管后复盘；只跑有到期任务的项目；Python 解析 manifest emoji；每次启动/结束落盘日志
 - 2026-06-09 | refactor | 全量重构：三角色架构、.claude/skills 目录、hooks、模板化 config
 - YYYY-MM-DD | 类型 | 一句话
+- 2026-06-14 | chore | 同步 dev 层引擎件（CLAUDE.md/prompts/run.sh 本地最新版）；manifest+config 改通用模板；skills 按白名单同步（排除 gpt-vision）
