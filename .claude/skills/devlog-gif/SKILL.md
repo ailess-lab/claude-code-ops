@@ -20,8 +20,10 @@ description: 把游戏/项目的录屏视频做成 GIF，上传到 GitHub 仓库
 ## 路径约定（贯穿全程，违反必踩坑）
 
 - 本环境是 Windows + git bash，但会调 Windows 版 python。
-- **所有临时文件路径统一用 `C:/...` 绝对正斜杠格式**——bash 和 python 都认。
-- ❌ 别用 `/tmp/...`：git bash 的 `/tmp` Windows python 看不见，会 `FileNotFoundError`。
+- 开工先 `mkdir -p tmp`；**所有临时文件统一放相对目录 `tmp/`，用相对正斜杠路径**——bash 和 Windows python 都按各自 cwd 解析，相对路径两边都认，搬目录也不会坏。
+- ❌ 别用 `/tmp/...`：git bash 的 `/tmp` 是 MSYS 虚拟挂载，Windows python 看不见，会 `FileNotFoundError`。
+- ❌ 别写 `C:/...` 等绝对盘符路径：换机器 / 移目录就坏（项目铁律禁绝对路径）。
+- 源视频路径由用户给、可能在项目外——原样用，不转相对。
 
 ## 步骤
 
@@ -31,14 +33,14 @@ description: 把游戏/项目的录屏视频做成 GIF，上传到 GitHub 仓库
 
 **1a. 按时长筛候选**（找目标长度，如 ~30 秒）：
 ```
-ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "C:/path/视频.mp4"
+ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "<视频路径>"
 ```
 对目录下所有视频批量看时长，挑出时长接近用户说的那段。
 
 **1b. 抽帧**（抽开头/中间/结尾各一帧，交叉确认）：
 ```
-ffmpeg -y -ss 3 -i "C:/path/视频.mp4" -frames:v 1 "C:/path/frame_start.png"
-ffmpeg -y -ss 15 -i "C:/path/视频.mp4" -frames:v 1 "C:/path/frame_mid.png"
+ffmpeg -y -ss 3 -i "<视频路径>" -frames:v 1 "tmp/frame_start.png"
+ffmpeg -y -ss 15 -i "<视频路径>" -frames:v 1 "tmp/frame_mid.png"
 ```
 
 **1c. 视觉模型确认内容**：用 `analyze_image` 类工具看帧图，确认拍的是**目标游戏/项目**的画面（不是录错了、不是别的项目）。
@@ -55,7 +57,7 @@ ffmpeg -y -ss 15 -i "C:/path/视频.mp4" -frames:v 1 "C:/path/frame_mid.png"
 
 **2c. ffmpeg 裁剪**：
 ```
-ffmpeg -y -i "C:/path/视频.mp4" -vf "crop=1720:900:130:80" -c:a copy "C:/path/cropped.mp4"
+ffmpeg -y -i "<视频路径>" -vf "crop=1720:900:130:80" -c:a copy "tmp/cropped.mp4"
 ```
 
 **2d. 复核裁干净了没**：从 cropped 抽一帧（尤其看底部和左右边缘），让视觉模型再看一遍有没有残留的 dock/控制栏。
@@ -68,18 +70,18 @@ ffmpeg -y -i "C:/path/视频.mp4" -vf "crop=1720:900:130:80" -c:a copy "C:/path/
 **3b. palette 两遍法**（控制大小兼顾清晰）：
 ```
 # 第一遍：生成调色板
-ffmpeg -y -ss <start> -t <duration> -i "C:/path/cropped.mp4" ^
-  -vf "fps=12,scale=600:-1:flags=lanczos,palettegen=stats_mode=diff" "C:/path/palette.png"
+ffmpeg -y -ss <start> -t <duration> -i "tmp/cropped.mp4" ^
+  -vf "fps=12,scale=600:-1:flags=lanczos,palettegen=stats_mode=diff" "tmp/palette.png"
 
 # 第二遍：用调色板生成 GIF
-ffmpeg -y -ss <start> -t <duration> -i "C:/path/cropped.mp4" -i "C:/path/palette.png" ^
-  -filter_complex "fps=12,scale=600:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=5" "C:/path/out.gif"
+ffmpeg -y -ss <start> -t <duration> -i "tmp/cropped.mp4" -i "tmp/palette.png" ^
+  -filter_complex "fps=12,scale=600:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=5" "tmp/out.gif"
 ```
 > git bash 里把 `^` 换行去掉写成一行，或用 `\`。
 
 **3c. 看大小**：
 ```
-ls -l "C:/path/out.gif"   # 看 KB
+ls -l "tmp/out.gif"   # 看 KB
 ```
 - **校验点**：README 友好区间约 < 8MB。❌ 太大 → 降 `fps`(12→10)、缩更小(`600`→`480`)、截更短；❌ 太糊 → `scale` 调大(`720`)、`fps` 提到 15（权衡大小）。
 
@@ -95,19 +97,19 @@ gh api repos/{owner}/{repo}/contents/{gif路径} --jq '.sha' 2>/dev/null
 
 **4b. base64 编码**：
 ```
-B64=$(base64 -w 0 < "C:/path/out.gif")
+B64=$(base64 -w 0 < "tmp/out.gif")
 ```
 
 **4c. 写 payload 文件**（heredoc 嵌 `${B64}`；更新已有文件就加 `"sha"` 行）：
 ```
-cat > "C:/path/gif_payload.json" <<EOF
+cat > "tmp/gif_payload.json" <<EOF
 {"message":"add devlog gif","content":"${B64}","branch":"main"}
 EOF
 ```
 
 **4d. 上传**：
 ```
-gh api --method PUT repos/{owner}/{repo}/contents/{gif路径} --input "C:/path/gif_payload.json"
+gh api --method PUT repos/{owner}/{repo}/contents/{gif路径} --input "tmp/gif_payload.json"
 ```
 - **校验点**：返回 `201`（新建）或 `200`（更新），有 `commit.sha`。❌ 失败看改道表。
 
@@ -117,7 +119,7 @@ gh api --method PUT repos/{owner}/{repo}/contents/{gif路径} --input "C:/path/g
 
 **5a. 拉远端 README + sha**：
 ```
-gh api repos/{owner}/{repo}/contents/README.md > "C:/path/readme_meta.json"
+gh api repos/{owner}/{repo}/contents/README.md > "tmp/readme_meta.json"
 ```
 
 **5b. python：解码 → 插入新 GIF 块（保留旧 GIF）→ 再编码 → 输出 payload**：
@@ -137,13 +139,13 @@ new_b64 = base64.b64encode(content.encode("utf-8")).decode()
 json.dump({"message":"update readme: add progress gif","content":new_b64,"sha":sha,"branch":"main"},
           open(sys.argv[2],"w",encoding="utf-8"))
 ```
-跑：`python "C:/path/edit_readme.py" "C:/path/readme_meta.json" "C:/path/readme_payload.json"`
+跑：`python tmp/edit_readme.py tmp/readme_meta.json tmp/readme_payload.json`
 
 > `assert` 那行是命脉：锚点必须唯一，否则一个 replace 改坏多处。先 `grep` 确认锚点在远端 README 只出现一次。
 
 **5c. PUT 更新 README**：
 ```
-gh api --method PUT repos/{owner}/{repo}/contents/README.md --input "C:/path/readme_payload.json"
+gh api --method PUT repos/{owner}/{repo}/contents/README.md --input "tmp/readme_payload.json"
 ```
 
 **5d. 复核**：再拉一次远端 README，确认新 GIF 块在、**旧 GIF 块还在**。
@@ -151,7 +153,7 @@ gh api --method PUT repos/{owner}/{repo}/contents/README.md --input "C:/path/rea
 
 ### 6. 清理 + 落盘回执
 
-**6a. 删临时文件**：frames、palette.png、cropped.mp4、各 payload.json——都是中间产物，不留。
+**6a. 删临时文件**：frames、palette.png、cropped.mp4、各 payload.json、edit_readme.py——都是中间产物，不留（`rm -rf tmp/`）。
 
 **6b. 回执写入项目 `state/tasks.md`**（对应该 GIF 任务的条目下）：
 ```
@@ -181,7 +183,7 @@ gh api --method PUT repos/{owner}/{repo}/contents/README.md --input "C:/path/rea
 | 上传报 409/422 sha mismatch | 文件已被改过，重拉 sha 再 PUT |
 | README replace 撞多处 / 改错位置 | 锚点不唯一 → 用更长的独特串；先 `grep -c` 确认命中 1 次 |
 | anchor `hit 0`（replace 一处没替换） | README 很可能是 **CRLF（\r\n）换行**，anchor 用 `\n` 会全 miss。拉远端后先 `print(repr(content[锚点附近]))` 看实际换行符，anchor 和插入块都用 `\r\n`（与原文一致，别混 LF/CRLF） |
-| python 报 `FileNotFoundError: /tmp/...` | 路径没用 `C:/` 绝对格式，改掉 |
+| python 报 `FileNotFoundError: /tmp/...` | 用了 `/tmp/`（MSYS 虚拟路径 Windows python 看不见）→ 改用相对 `tmp/` |
 | 本地工作树有未提交改动想 push | ⚠️ 停。本 skill 第 5 步直传远端不碰本地。push 会覆盖远端 |
 
 ## 验收清单（回执逐项勾）
@@ -192,6 +194,6 @@ gh api --method PUT repos/{owner}/{repo}/contents/README.md --input "C:/path/rea
 - [ ] GIF 已上传到仓库（commit sha 记了）
 - [ ] README 远端已更新：新 GIF 块在、**旧 GIF 块保留**
 - [ ] 全程没碰本地工作树（走 contents API）
-- [ ] 临时文件已清理
+- [ ] 临时文件已清理（`tmp/` 清空）
 - [ ] 配文诚实（work in progress，没吹画面，符合 team.md 腔调）
 - [ ] 回执已写入项目 `state/tasks.md`

@@ -1,8 +1,17 @@
-# claude-code-ops
+# Per-project data (private)
+projects/*/
+!projects/README.md
+
+# Runtime
 logs/
 notifications/
 .claude/scheduled_tasks.json
 .claude/scheduled_tasks.lock
 .claude/settings.local.json
-projects/*/
-!projects/README.md
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

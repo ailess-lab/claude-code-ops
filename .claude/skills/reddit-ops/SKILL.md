@@ -82,11 +82,21 @@ description: Reddit 评论、浏览帖子、查用户状态。养号（新号攒
 
 ### 检查账号状态
 
+**查账号真实总 karma（判断养号效果看这个）**：
+
+```bash
+opencli reddit user <username> -f json
+```
+
+返回 Post Karma / Comment Karma / Total Karma——Reddit 聚合后的真实值。
+
+**逐条评论 score（看有没有被 upvote）**：
+
 ```bash
 opencli reddit user-comments <username> --limit 10 -f json
 ```
 
-每条评论的 `score` 就是获得的 karma 数。
+⚠️ 每条评论的 `score` = 赞 − 踩，**初始 1 = 你自己那一票，不等于获得的 karma**。只有别人 upvote、score 涨到 2+ 才算真实增长。**别把 score 相加当 karma**（2026-06-20 踩坑：专员累加 15 条 score 报「14 karma」，实测真实 Total Karma = 0）。养号有没有效果，看 `opencli reddit user` 的 Comment Karma。
 
 ## 常见问题
 

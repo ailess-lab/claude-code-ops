@@ -116,8 +116,9 @@ README/LICENSE 缺失、仓库空壳、需删/重建 → **写 tasks（注明具
 1. 取敏感词清单：项目的 `config/directives.md` 红线段 / 项目自己的脱敏清单。没有 → 问主管，**不自己猜哪些敏感**。
 2. **fresh clone** 后查（不能只查工作区——git 历史藏旧版本）：
    ```
-   git clone https://github.com/{owner}/{repo}.git /tmp/audit
-   cd /tmp/audit
+   mkdir -p tmp
+   git clone https://github.com/{owner}/{repo}.git tmp/audit
+   cd tmp/audit
    git log --all --oneline -S"敏感词"   # pickaxe：哪些 commit 碰过敏感词
    grep -rn "敏感词" .                   # 当前文件
    ```

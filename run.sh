@@ -93,8 +93,8 @@ ${memory}"
   # 落盘：提示词
   echo "$prompt" > "$LOGS_DIR/${tag}-prompt.md"
 
-  # 执行
-  result=$(claude -p "$prompt" --output-format text --max-turns 50 2>&1)
+  # 执行：prompt 从已落盘文件走 stdin，不当命令行参数（超长 prompt 会触发 ARG_MAX）
+  result=$(claude -p --output-format text --max-turns 50 < "$LOGS_DIR/${tag}-prompt.md" 2>&1)
 
   # 落盘：结果
   echo "$result" > "$LOGS_DIR/${tag}-result.md"
@@ -138,8 +138,8 @@ ${debt}"
   # 落盘：提示词
   echo "$prompt" > "$LOGS_DIR/${tag}-prompt.md"
 
-  # 执行
-  result=$(claude -p "$prompt" --output-format text --max-turns 50 2>&1)
+  # 执行：prompt 从已落盘文件走 stdin，不当命令行参数（超长 prompt 会触发 ARG_MAX）
+  result=$(claude -p --output-format text --max-turns 50 < "$LOGS_DIR/${tag}-prompt.md" 2>&1)
 
   # 落盘：结果
   echo "$result" > "$LOGS_DIR/${tag}-result.md"
